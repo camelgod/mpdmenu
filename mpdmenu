@@ -44,7 +44,7 @@ d_spotify_track() {
 }
 d_spotify_swap_menu() {
 	local view
-	view=$(echo -e "1. Change Playlist\n2. Change Track\n3. Search" | dmenu -p "Main Menu" "${dmenu_args[@]}")
+	view=$(echo -e "1. Change Playlist\n2. Change Track\n3. Search" | dmenu -p "Main Menu" ${dmenu_args[@]})
 	printf '%s' "${view}"
 }
 d_spotify_search() {
@@ -52,20 +52,20 @@ d_spotify_search() {
 	local searchQuery=$(echo | dmenu -p Search "${dmenu_args[@]}")
 	if [[ "$typeOfQuery" == *"album"* ]]; then
 		format="%album% - %artist% - .%file%."
-		result=$(mpc search -f "$format" album "$searchQuery" | dmenu -l 5 -p Search "${dmenu_args[@]}")
+		result=$(mpc search -f "$format" album "$searchQuery" | dmenu -l 5 -p Search ${dmenu_args[@]})
 	else
 		format="%title% - %artist% - .%file%."
-		result=$(mpc search -f "$format" title "$searchQuery" | dmenu -l 5 -p Search "${dmenu_args[@]}")
+		result=$(mpc search -f "$format" title "$searchQuery" | dmenu -l 5 -p Search ${dmenu_args[@]})
 	fi
 
 	printf '%s' "${result}"
 }
 
-i=3
+i=2
 
 for arg do
     if [[ $arg == :: ]]; then
-        dmenu_args=( "${@:$i}" )
+	    dmenu_args="${@:i}"
         break
     fi
 
