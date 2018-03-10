@@ -44,8 +44,21 @@ d_spotify_track() {
 }
 d_spotify_swap_menu() {
 	local view
-	view=$(echo -e "Change Playlist\nChange Song" | dmenu -p Menu: "${dmenu_args[@]}")
+	view=$(echo -e "1. Change Playlist\n2. Change Track\n3. Search" | dmenu -p "Main Menu" "${dmenu_args[@]}")
 	printf '%s' "${view}"
+}
+d_spotify_search() {
+	local typeOfQuery=$(echo -e "album\ntrack" | dmenu -p "Search type" "${dmenu_args[@]}")
+	local searchQuery=$(echo | dmenu -p Search "${dmenu_args[@]}")
+	if [[ "$typeOfQuery" == *"album"* ]]; then
+		format="%album% - %artist% - .%file%."
+		result=$(mpc search -f "$format" album "$searchQuery" | dmenu -l 5 -p Search "${dmenu_args[@]}")
+	else
+		format="%title% - %artist% - .%file%."
+		result=$(mpc search -f "$format" title "$searchQuery" | dmenu -l 5 -p Search "${dmenu_args[@]}")
+	fi
+
+	printf '%s' "${result}"
 }
 
 i=3
@@ -67,14 +80,23 @@ done
 
 case "$mode" in
     spotify)
-	if [[ "$(d_spotify_swap_menu)" == "Change Playlist" ]]; then
+	menuSelection="$(d_spotify_swap_menu)"
+
+	if [[ "$menuSelection" == "1"* ]]; then
 		" Cache selection, preventing interrupting song while selecting new playlist"
 		selectedtrack=$(d_spotify_playlist)
 		mpc clear
 		mpc load "$selectedtrack"
 		mpc play 1
-	else
-		mpc play "$(d_spotify_track)"
+	elif [[ "$menuSelection" == "2"* ]]; then
+		selectedtrack=$(d_spotify_track)
+		mpc play "$selectedtrack"
+	elif [[ "$menuSelection" == "3"* ]]; then
+		searchquery=$(d_spotify_search)
+		raw=$(echo $searchquery | cut -d . -f2)
+		mpc clear
+		mpc add "$raw"
+		mpc play
 	fi
 	;;
     library)
