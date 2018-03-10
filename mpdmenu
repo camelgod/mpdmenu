@@ -48,7 +48,7 @@ d_spotify_swap_menu() {
 	printf '%s' "${view}"
 }
 d_spotify_search() {
-	local typeOfQuery=$(echo -e "album\ntrack" | dmenu -p "Search type" "${dmenu_args[@]}")
+	local typeOfQuery=$(echo -e "album\ntrack" | dmenu -p "Search type" ${dmenu_args[@]})
 	local searchQuery=$(echo | dmenu -p Search "${dmenu_args[@]}")
 	if [[ "$typeOfQuery" == *"album"* ]]; then
 		format="%album% - %artist% - .%file%."
