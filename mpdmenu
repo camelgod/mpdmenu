@@ -44,7 +44,7 @@ d_spotify_track() {
 }
 d_spotify_swap_menu() {
 	local view
-	view=$(echo -e "1. Change Playlist\n2. Change Track\n3. Search" | dmenu -p "Main Menu" ${dmenu_args[@]})
+	view=$(echo -e "playlist\ntrack\nsearch\npause\nplay\nskip" | dmenu -p "Main Menu" ${dmenu_args[@]})
 	printf '%s' "${view}"
 }
 d_spotify_search() {
@@ -83,7 +83,7 @@ case "$mode" in
     spotify)
 	menuSelection="$(d_spotify_swap_menu)"
 
-	if [[ "$menuSelection" == "1"* ]]; then
+	if [[ "$menuSelection" == "playlist" ]]; then
 		" Cache selection, preventing interrupting song while selecting new playlist"
 		selectedtrack=$(d_spotify_playlist)
 		if [[ "$selectedtrack" != "" ]]; then 
@@ -91,12 +91,12 @@ case "$mode" in
 			mpc load "$selectedtrack"
 			mpc play 1
 		fi
-	elif [[ "$menuSelection" == "2"* ]]; then
+	elif [[ "$menuSelection" == "track" ]]; then
 		selectedtrack=$(d_spotify_track)
 		if [[ "$selectedtrack" != "" ]]; then 
 			mpc play "$selectedtrack"
 		fi
-	elif [[ "$menuSelection" == "3"* ]]; then
+	elif [[ "$menuSelection" == "search" ]]; then
 		searchquery=$(d_spotify_search)
 		if [[ "$searchquery" != "" ]]; then 
 			raw=$(echo $searchquery | cut -d . -f2)
@@ -104,6 +104,12 @@ case "$mode" in
 			mpc add "$raw"
 			mpc play
 		fi
+	elif [[ "$menuSelection" == "play" ]]; then
+		mpc play
+	elif [[ "$menuSelection" == "pause" ]]; then
+		mpc pause
+	elif [[ "$menuSelection" == "skip" ]]; then
+		mpc next
 	fi
 	;;
     library)
