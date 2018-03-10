@@ -1,6 +1,14 @@
 # About :sparkles: :camel: :sparkles:
 This is a fork adding mopidy-spotify functionality to cdown/mpdmenu frontend for MPD.
 
+### Example of menu
+![Examle image 1](http://god.e-grotto.faith/mpd1.png)
+
+### Example of search results
+![Examle image 2](http://god.e-grotto.faith/mpd2.png)
+
+
+
 ## Requirements
 You need to be running mpd server with https://github.com/mopidy/mopidy-spotify enabled.
 
