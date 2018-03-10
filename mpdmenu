@@ -1,7 +1,7 @@
 #!/bin/bash
 
 all_name='[ALL]'
-mode=library
+mode=spotify
 
 d_artist() {
     mpc list artist | sort -f | dmenu -p artist "${dmenu_args[@]}"
@@ -31,7 +31,24 @@ d_playlist() {
     printf '%s' "${track%% *}"
 }
 
-i=2
+d_spotify_playlist() {
+	local playlist
+	playlist=$(mpc lsplaylists | dmenu -p Playlist: "${dmenu_args[@]}")
+	printf '%s' "${playlist}"
+}
+d_spotify_track() {
+	local format="%position% - %title% - %artist%"
+	local track
+	track=$(mpc playlist -f "$format"| dmenu -p Track "${dmenu_args[@]}")
+	printf '%s' "${track%% *}"
+}
+d_spotify_swap_menu() {
+	local view
+	view=$(echo -e "Change Playlist\nChange Song" | dmenu -p Menu: "${dmenu_args[@]}")
+	printf '%s' "${view}"
+}
+
+i=3
 
 for arg do
     if [[ $arg == :: ]]; then
@@ -42,12 +59,24 @@ for arg do
     case "$arg" in
         -l) mode=library ;;
         -p) mode=playlist ;;
+        -s) mode=spotify ;;
     esac
 
     let i++
 done
 
 case "$mode" in
+    spotify)
+	if [[ "$(d_spotify_swap_menu)" == "Change Playlist" ]]; then
+		" Cache selection, preventing interrupting song while selecting new playlist"
+		selectedtrack=$(d_spotify_playlist)
+		mpc clear
+		mpc load "$selectedtrack"
+		mpc play 1
+	else
+		mpc play "$(d_spotify_track)"
+	fi
+	;;
     library)
         artist=$(d_artist)
         [[ $artist ]] || exit 1
