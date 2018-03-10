@@ -85,18 +85,24 @@ case "$mode" in
 	if [[ "$menuSelection" == "1"* ]]; then
 		" Cache selection, preventing interrupting song while selecting new playlist"
 		selectedtrack=$(d_spotify_playlist)
-		mpc clear
-		mpc load "$selectedtrack"
-		mpc play 1
+		if [[ "$selectedtrack" != "" ]]; then 
+			mpc clear
+			mpc load "$selectedtrack"
+			mpc play 1
+		fi
 	elif [[ "$menuSelection" == "2"* ]]; then
 		selectedtrack=$(d_spotify_track)
-		mpc play "$selectedtrack"
+		if [[ "$selectedtrack" != "" ]]; then 
+			mpc play "$selectedtrack"
+		fi
 	elif [[ "$menuSelection" == "3"* ]]; then
 		searchquery=$(d_spotify_search)
-		raw=$(echo $searchquery | cut -d . -f2)
-		mpc clear
-		mpc add "$raw"
-		mpc play
+		if [[ "$searchquery" != "" ]]; then 
+			raw=$(echo $searchquery | cut -d . -f2)
+			mpc clear
+			mpc add "$raw"
+			mpc play
+		fi
 	fi
 	;;
     library)
